@@ -6,6 +6,7 @@ class Dep{
     }
 
     get value(){
+        this.dep()
         return this._value
     }
 
@@ -14,9 +15,9 @@ class Dep{
         this.notify()
     }
 
-    dep(effect){
+    dep(){
         if(currentEffect){
-            this.effects.add(effect)
+            this.effects.add(currentEffect)
         }
     }
 
@@ -29,7 +30,6 @@ class Dep{
 const watchEffect=(effect)=>{
 currentEffect=effect
 effect()
-dep.dep(effect)
 currentEffect=null
 }
 
