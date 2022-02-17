@@ -7,7 +7,14 @@
     <title>Document</title>
 </head>
 <body>
-    <script type="module" src="./index.js">
-    </script>
+    <script>
+        function handlerInputChange(target){
+        window.state.uname=target.value
+    }
+       </script>
+       👇 <span>响应式数据</span>
+   <div id="app"></div>
+    <input type="text" id="input" oninput="handlerInputChange(this)"/>
+    <script type="module" src="./index.js"/>
 </body>
 </html>
