@@ -71,18 +71,18 @@ export function reactive(raw){
     })
 }
 
-const user = reactive({
-    uname:'sudongyu'
-})
+// const user = reactive({
+//     uname:'sudongyu'
+// })
 
-watchEffect(()=>{
-    //必须读取响应式对象的值，触发收集依赖
-    console.log("reactive======",user.uname)//这里思考一下到依赖被通知的时候，会不会再次收集依赖呢？答案不会，因为通知的时候只执行当前函数，并没有在watchEffect中，currentEffect为null，所以不会重复收集依赖
-})
+// watchEffect(()=>{
+//     //必须读取响应式对象的值，触发收集依赖
+//     console.log("reactive======",user.uname)//这里思考一下到依赖被通知的时候，会不会再次收集依赖呢？答案不会，因为通知的时候只执行当前函数，并没有在watchEffect中，currentEffect为null，所以不会重复收集依赖
+// })
 
-//触发依赖
-user.uname='lisi'
+// //触发依赖
+// user.uname='lisi'
 
-user.uname='wangwu'
+// user.uname='wangwu'
 
 
