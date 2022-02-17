@@ -28,7 +28,7 @@ class Dep{
 }
 
 
-const watchEffect=(effect)=>{
+export const watchEffect=(effect)=>{
 currentEffect=effect
 effect()
 // dep.dep(effect)
@@ -53,7 +53,7 @@ function getDep(target,key){
        return dep
 }
 
-function reactive(raw){
+export function reactive(raw){
     return new Proxy(raw,{
         get(target,key){
            const dep = getDep(target,key)
