@@ -1,4 +1,4 @@
-import { add } from "../.."
+import { add } from "."
 import { effect } from "../effect"
 
 it("init",()=>{
