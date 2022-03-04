@@ -1,8 +1,12 @@
 import { extend } from "../shared";
 
+// 全局变量，用来保存当前正在执行的effect
+let activeEffect;
+//全局变量 是否收集依赖
+let shouldTrack;
 class ReactiveEffect {
   private _fn: any;
-  dep :any;
+  dep: any;
   active = true;
   onStop: any;
   constructor(fn, public scheduler?) {
@@ -10,8 +14,14 @@ class ReactiveEffect {
   }
 
   run() {
+    if (!this.active) {
+      return this._fn();
+    }
+    shouldTrack = true;
     activeEffect = this;
-    return this._fn();
+    const result = this._fn();
+    shouldTrack = false;
+    return result;
   }
 
   stop() {
@@ -31,7 +41,7 @@ class ReactiveEffect {
  * @param effect
  */
 function cleanupEffect(effect) {
-  effect.dep.delete(effect)
+  effect.dep.delete(effect);
   // effect.deps.forEach((dep: any) => {
   //   dep.delete(effect);
   // });
@@ -56,8 +66,9 @@ export function track(target, key) {
     depsMap.set(key, dep);
   }
   if (!activeEffect) return;
+  if (!shouldTrack) return;
   dep.add(activeEffect);
-  activeEffect.dep=dep;
+  activeEffect.dep = dep;
 }
 
 /**
@@ -76,8 +87,7 @@ export function trigger(target, key) {
     }
   }
 }
-// 全局变量，用来保存当前正在执行的effect
-let activeEffect;
+
 export function effect(fn, options: any = {}) {
   const { scheduler, onStop } = options;
   //调用fn
