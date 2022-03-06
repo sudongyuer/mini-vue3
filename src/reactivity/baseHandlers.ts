@@ -1,5 +1,6 @@
+import { isObject } from "../shared";
 import { track, trigger } from "./effect";
-import { ReactiveFlags } from "./reactive";
+import { reactive, ReactiveFlags, readonly } from "./reactive";
 const get = creatGetter(false);
 const readOnlyGet = creatGetter(true);
 const set = creatSetter();
@@ -13,6 +14,10 @@ function creatGetter(isReadonly) {
       return !isReadonly;
     } else if (key === ReactiveFlags.IS_READONLY) {
       return isReadonly;
+    }
+    //判断是否为对象
+    if(isObject(res)){
+      return isReadonly ? readonly(res) : reactive(res)
     }
     return res;
   };
