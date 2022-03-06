@@ -4,7 +4,7 @@ import { extend } from "../shared";
 let activeEffect;
 //全局变量 是否收集依赖
 let shouldTrack;
-class ReactiveEffect {
+export class ReactiveEffect {
   private _fn: any;
   dep: any;
   active = true;
