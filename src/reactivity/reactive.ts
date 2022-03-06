@@ -24,3 +24,6 @@ export function isReadonly(value){
 export function shallowReactive(raw){
   return creatReactiveObject(raw,shallowReadonlyHandlers)
 }
+export function isProxy(value){
+  return isReactive(value) || isReadonly(value)
+}
