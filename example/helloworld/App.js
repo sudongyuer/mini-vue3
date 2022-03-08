@@ -1,14 +1,21 @@
-import {h} from '../../lib/guide-mini-vue.esm.js'
+import { h } from "../../lib/guide-mini-vue.esm.js";
 export const App = {
-    //必须要写 render 
-    render(){
-        // ui
-        return h("div","hi,mini-vue"+this.msg)
-    },
-    setup(){
-        // composition api
-        return {
-            msg:"sudongyuer"
-        }
-    }
-}
+  //必须要写 render
+  render() {
+    // ui
+    return h(
+      "div",
+      {
+        id: "root",
+        class: ["red", "hard"],
+      },
+      [h("p",{class:"red"},"hi"),h("p",{class:"green"},"mini-vue")]
+    );
+  },
+  setup() {
+    // composition api
+    return {
+      msg: "sudongyuer",
+    };
+  },
+};
