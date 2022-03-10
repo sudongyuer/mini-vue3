@@ -1,5 +1,6 @@
 import { isObject } from "../shared";
 import { createComponentInstance, setupComponent } from "./component";
+import { createVNode } from "./vnode";
 
 export function render(vnode, container) {
   //patch
@@ -21,11 +22,11 @@ function patch(vnode, container) {
 function processComponent(vnode: any, container: any) {
   mountComponent(vnode, container);
 }
-function mountComponent(vnode: any, container: any) {
+function mountComponent(initialVNode: any, container: any) {
   //TODO
-  const instance = createComponentInstance(vnode);
+  const instance = createComponentInstance(initialVNode);
   setupComponent(instance);
-  setupRenderEffect(instance, container);
+  setupRenderEffect(instance,initialVNode, container);
 }
 
 function processElement(vnode: any, container: any) {
@@ -33,7 +34,7 @@ function processElement(vnode: any, container: any) {
 }
 
 function mountElement(vnode: any, container: any) {
-  const el = document.createElement(vnode.type);
+  const el = (vnode.el=document.createElement(vnode.type));
   const { children } = vnode;
   //处理elment的属性
   const { props } = vnode;
@@ -57,11 +58,13 @@ function mountChildren(vnode,container){
 }
 }
 
-function setupRenderEffect(instance: any, container) {
+function setupRenderEffect(instance: any,initialVNode, container) {
   const { proxy } = instance
   const subTree = instance.render.call(proxy);
 
   //vnode(component)->patch
-  //vnode(element) ->mountElement
+  //vnode(element) ->mountEleTment
   patch(subTree, container);
+
+  initialVNode.el = subTree.el
 }
