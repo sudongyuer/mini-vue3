@@ -28,13 +28,6 @@ function mountComponent(vnode: any, container: any) {
   setupRenderEffect(instance, container);
 }
 
-function setupRenderEffect(instance: any, container) {
-  const subTree = instance.render();
-
-  //vnode(component)->patch
-  //vnode(element) ->mountElement
-  patch(subTree, container);
-}
 function processElement(vnode: any, container: any) {
   mountElement(vnode, container);
 }
@@ -62,4 +55,13 @@ function mountChildren(vnode,container){
   for (const child of vnode.children) {
     patch(child,container)
 }
+}
+
+function setupRenderEffect(instance: any, container) {
+  const { proxy } = instance
+  const subTree = instance.render.call(proxy);
+
+  //vnode(component)->patch
+  //vnode(element) ->mountElement
+  patch(subTree, container);
 }
