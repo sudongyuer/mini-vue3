@@ -1,5 +1,6 @@
 import { isObject } from "../shared";
 import { createComponentInstance, setupComponent } from "./component";
+import { ShapeFlags } from "../shared/ShapeFlags";
 import { createVNode } from "./vnode";
 
 export function render(vnode, container) {
@@ -12,11 +13,14 @@ function patch(vnode, container) {
   //判断是不是 element
   // processElement()
   console.log(vnode.type);
-  if (typeof vnode.type === "string") {
-    processElement(vnode, container);
-  } else if (isObject(vnode.type)) {
-    processComponent(vnode, container);
-  }
+  const {shapeFlag} = vnode;
+
+    if(shapeFlag & ShapeFlags.ELEMENT){
+      processElement(vnode,container);
+    }else if(shapeFlag & ShapeFlags.STATEFUL_COMPONENT){
+      processComponent(vnode,container);
+    }
+  
 }
 
 function processComponent(vnode: any, container: any) {
@@ -35,19 +39,21 @@ function processElement(vnode: any, container: any) {
 
 function mountElement(vnode: any, container: any) {
   const el = (vnode.el=document.createElement(vnode.type));
-  const { children } = vnode;
-  //处理elment的属性
-  const { props } = vnode;
-  for (const key in props) {
-    el.setAttribute(key, props[key]);
-  }
+  const { children , shapeFlag } = vnode;
+
   //children string or Array
-  if (typeof children === "string") {
+  if (shapeFlag & ShapeFlags.TEXT_CHILDREN) {
     el.textContent = children;
-  }else if(Array.isArray(children)){
+  }else if(shapeFlag & ShapeFlags.ARRAY_CHILDREN){
     //递归创建当前elment的字元素
     mountChildren(vnode,el)
   }
+
+    //处理elment的属性
+    const { props } = vnode;
+    for (const key in props) {
+      el.setAttribute(key, props[key]);
+    }
   //最后添加到父级容器上
   container.append(el);
 }
