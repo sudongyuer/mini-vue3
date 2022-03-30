@@ -1,23 +1,26 @@
-export const extend = Object.assign
-  export function isObject(val){
-      return val!==null &&(typeof val === 'object')
-  }
+export const extend = Object.assign;
 
-  export const hasChanged=(val,newValue)=>{
-    return !Object.is(val,newValue)
-  }
+export const isObject = (value) => {
+  return value !== null && typeof value === "object";
+};
 
-  export const hasOwn = (val,key)=>Object.prototype.hasOwnProperty.call(val,key);
+export const hasChanged = (val, newValue) => {
+  return !Object.is(val, newValue);
+};
 
-  export const camelize = (str)=>{
-    return str.replace(/-(\w)/g,(_,p)=>{
-      return p ? p.toUpperCase() : ''
-    })
-  }
-  //去掉首字母
-  export const capitalize = (str) => {
-      return str.charAt(0).toUpperCase() + str.slice(1);
-  }
-  export const toHandlerKey =(str)=>{
-    return  str ? "on" + capitalize(str) : ""
-  }
+export const hasOwn = (val, key) =>
+  Object.prototype.hasOwnProperty.call(val, key);
+
+export const camelize = (str: string) => {
+  return str.replace(/-(\w)/g, (_, c: string) => {
+    return c ? c.toUpperCase() : "";
+  });
+};
+
+const capitalize = (str: string) => {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+};
+
+export const toHandlerKey = (str: string) => {
+  return str ? "on" + capitalize(str) : "";
+};

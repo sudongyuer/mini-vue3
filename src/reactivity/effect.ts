@@ -1,29 +1,32 @@
 import { extend } from "../shared";
 
-// 全局变量，用来保存当前正在执行的effect
 let activeEffect;
-//全局变量 是否收集依赖
-let shouldTrack;
+let shouldTrack = false;
 export class ReactiveEffect {
   private _fn: any;
-  dep: any;
+  deps = [];
   active = true;
-  onStop: any;
-  constructor(fn, public scheduler?) {
+  onStop?: () => void;
+  public scheduler: Function | undefined;
+  constructor(fn, scheduler?: Function) {
     this._fn = fn;
+    this.scheduler = scheduler;
   }
-
   run() {
     if (!this.active) {
       return this._fn();
     }
+
+    // 应该收集
     shouldTrack = true;
     activeEffect = this;
-    const result = this._fn();
-    shouldTrack = false;
-    return result;
-  }
+    const r = this._fn();
 
+    // 重置
+    shouldTrack = false;
+
+    return r;
+  }
   stop() {
     if (this.active) {
       cleanupEffect(this);
@@ -35,63 +38,53 @@ export class ReactiveEffect {
   }
 }
 
-/**
- *
- * 清理effect
- * @param effect
- */
 function cleanupEffect(effect) {
-  effect.dep.delete(effect);
-  // effect.deps.forEach((dep: any) => {
-  //   dep.delete(effect);
-  // });
+  effect.deps.forEach((dep: any) => {
+    dep.delete(effect);
+  });
+
+  // 把 effect.deps 清空
+  effect.deps.length = 0;
 }
 
 const targetMap = new Map();
-/**
- * 收集依赖
- * @param target
- * @param key
- */
 export function track(target, key) {
-  //target -> key ->dep
+  if (!isTracking()) return;
+  // target -> key -> dep
   let depsMap = targetMap.get(target);
   if (!depsMap) {
     depsMap = new Map();
     targetMap.set(target, depsMap);
   }
+
   let dep = depsMap.get(key);
   if (!dep) {
     dep = new Set();
     depsMap.set(key, dep);
   }
-  if (!activeEffect) return;
-  if (!shouldTrack) return;
-  trackEffects(dep)
+
+  trackEffects(dep);
 }
 
-export function trackEffects(dep){
-  if(dep.has(activeEffect)) return 
+export function trackEffects(dep) {
+  // 看看 dep 之前有没有添加过，添加过的话 那么就不添加了
+  if (dep.has(activeEffect)) return;
+
   dep.add(activeEffect);
-  activeEffect.dep = dep;
+  activeEffect.deps.push(dep);
 }
 
-/**
- * 触发依赖
- * @param target
- * @param key
- */
+export function isTracking() {
+  return shouldTrack && activeEffect !== undefined;
+}
+
 export function trigger(target, key) {
   let depsMap = targetMap.get(target);
   let dep = depsMap.get(key);
-  triggerEffects(dep)
-} 
-
-export function isTracking(){
-  return shouldTrack && activeEffect !== undefined
+  triggerEffects(dep);
 }
 
-export function triggerEffects(dep){
+export function triggerEffects(dep) {
   for (const effect of dep) {
     if (effect.scheduler) {
       effect.scheduler();
@@ -102,14 +95,13 @@ export function triggerEffects(dep){
 }
 
 export function effect(fn, options: any = {}) {
-  const { scheduler, onStop } = options;
-  //调用fn
-  const _effect = new ReactiveEffect(fn, scheduler);
-  _effect.run();
-  //extend
+  // fn
+  const _effect = new ReactiveEffect(fn, options.scheduler);
   extend(_effect, options);
-  const runner: any = _effect.run.bind(_effect);
 
+  _effect.run();
+
+  const runner: any = _effect.run.bind(_effect);
   runner.effect = _effect;
 
   return runner;

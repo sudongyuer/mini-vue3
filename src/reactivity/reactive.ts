@@ -1,37 +1,44 @@
-import { isObject } from "../shared";
-import { mutableHandler, readonlyHandler, shallowReadonlyHandlers } from "./baseHandlers";
+import { isObject } from "../shared/index";
+import {
+  mutableHandlers,
+  readonlyHandlers,
+  shallowReadonlyHandlers,
+} from "./baseHandler";
 
-export const enum ReactiveFlags{
-  IS_REACTIVE="is_reactive",
-  IS_READONLY="is_readonly"
+export const enum ReactiveFlags {
+  IS_REACTIVE = "__v_isReactive",
+  IS_READONLY = "__v_isReadonly",
 }
 
 export function reactive(raw) {
-  return creatReactiveObject(raw, mutableHandler);
-}
-export function readonly(raw) {
-  return creatReactiveObject(raw, readonlyHandler);
-}
-function creatReactiveObject(raw: any, baseHandlers) {
-  if(!isObject(raw)){
-    console.warn(`target ${raw} 必须是一个对象`)
-    return raw
-  }
-  return new Proxy(raw, baseHandlers);
+  return createReactiveObject(raw, mutableHandlers);
 }
 
-export function isReactive(value){
-    return !!value[ReactiveFlags.IS_REACTIVE]
+export function readonly(raw) {
+  return createReactiveObject(raw, readonlyHandlers);
 }
-export function isReadonly(value){
-    return !!value[ReactiveFlags.IS_READONLY]
-}
+
 export function shallowReadonly(raw) {
-  return creatReactiveObject(raw, shallowReadonlyHandlers);
+  return createReactiveObject(raw, shallowReadonlyHandlers);
 }
-export function shallowReactive(raw){
-  return creatReactiveObject(raw,shallowReadonlyHandlers)
+
+export function isReactive(value) {
+  return !!value[ReactiveFlags.IS_REACTIVE];
 }
-export function isProxy(value){
-  return isReactive(value) || isReadonly(value)
+
+export function isReadonly(value) {
+  return !!value[ReactiveFlags.IS_READONLY];
+}
+
+export function isProxy(value) {
+  return isReactive(value) || isReadonly(value);
+}
+
+function createReactiveObject(target, baseHandles) {
+  if (!isObject(target)) {
+    console.warn(`target ${target} 必须是一个对象`);
+    return target
+  }
+
+  return new Proxy(target, baseHandles);
 }

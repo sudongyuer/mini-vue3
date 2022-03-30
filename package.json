@@ -1,28 +1,23 @@
 {
-  "name": "mini-vue3",
+  "name": "guide-mini-vue",
   "version": "1.0.0",
-  "description": "",
-  "main": "./lib/guide-mini-vue.cjs.js",
-  "module": "./lib/guide-mini-vue.esm.js",
+  "main": "lib/guide-mini-vue.cjs.js",
+  "module": "lib/guide-mini-vue.esm.js",
+  "license": "MIT",
   "scripts": {
     "test": "jest",
     "build": "rollup -c rollup.config.js"
   },
-  "author": "sudongyu",
-  "license": "MIT",
-  "dependencies": {
-    "@vue/reactivity": "^3.2.31"
-  },
   "devDependencies": {
-    "@babel/core": "^7.17.5",
-    "@babel/preset-env": "^7.16.11",
-    "@babel/preset-typescript": "^7.16.7",
-    "@rollup/plugin-typescript": "^8.3.1",
-    "@types/jest": "^27.4.0",
-    "babel-jest": "^27.5.1",
-    "jest": "^27.5.1",
-    "rollup": "^2.70.0",
+    "@babel/core": "^7.15.5",
+    "@babel/preset-env": "^7.15.4",
+    "@babel/preset-typescript": "^7.15.0",
+    "@rollup/plugin-typescript": "^8.2.5",
+    "@types/jest": "^27.0.1",
+    "babel-jest": "^27.1.0",
+    "jest": "^27.1.0",
+    "rollup": "^2.57.0",
     "tslib": "^2.3.1",
-    "typescript": "^4.5.5"
+    "typescript": "^4.4.2"
   }
 }
