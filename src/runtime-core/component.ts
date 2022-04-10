@@ -4,7 +4,7 @@ import { initProps } from "./componentProps";
 import { PublicInstanceProxyHandlers } from "./componentPublicInstance";
 import { initSlots } from "./componentSlots";
 
-export function createComponentInstance(vnode,parent) {
+export function createComponentInstance(vnode, parent) {
   const component = {
     vnode,
     type: vnode.type,
@@ -35,19 +35,17 @@ function setupStatefulComponent(instance: any) {
   const { setup } = Component;
 
   if (setup) {
-    setCurrentInstance(instance)
+    setCurrentInstance(instance);
     const setupResult = setup(shallowReadonly(instance.props), {
       emit: instance.emit,
     });
+    setCurrentInstance(null);
 
     handleSetupResult(instance, setupResult);
-    setCurrentInstance(null)
   }
 }
 
 function handleSetupResult(instance, setupResult: any) {
-  // function Object
-  // TODO function
   if (typeof setupResult === "object") {
     instance.setupState = setupResult;
   }
@@ -61,12 +59,12 @@ function finishComponentSetup(instance: any) {
   instance.render = Component.render;
 }
 
-let currentInstance = null; 
+let currentInstance = null;
 
-export function getCurrentInstance(){
-  return currentInstance
+export function getCurrentInstance() {
+  return currentInstance;
 }
 
-export function setCurrentInstance(instance){
+export function setCurrentInstance(instance) {
   currentInstance = instance;
 }
